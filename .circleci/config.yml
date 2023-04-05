@@ -1,15 +1,12 @@
 version: 2.1
 
-orbs:
-  terraform: circleci/terraform@3.2.0
-
 parameters:
   terraform-plan-file:
     type: string
     default: 'circleci.tfplan'
 
 executors:
-  base:
+  terraform:
     docker:
       - image: hashicorp/terraform:<< parameters.tag >>
     parameters:
@@ -17,20 +14,34 @@ executors:
         default: 1.3.7
         description: Specify the Terraform Docker image tag for the executor
         type: string
-
+  base:
+    docker:
+      - image: cimg/base:current
 jobs:
   run:
     executor: base
     steps:
       - setup_remote_docker
       - checkout
-      - run: terraform version
-      - run: terraform init
-      - run: terraform fmt
-      - run: terraform validate
-      - run: terraform plan -out=<< pipeline.parameters.terraform-plan-file >>
-      - run: terraform apply << pipeline.parameters.terraform-plan-file >>
-      - run: terraform show
+      - run:
+          name: pull image
+          command: |
+            docker pull telegraf:1.17-alpine
+      - run:
+          name: spin up Telegraf container (will fail)
+          command: |
+            docker run -v $(pwd)/etc_telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+      - run:
+          name: fix Telegraf config
+          command: |
+            # add quotes
+            sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' etc_telegraf/telegraf.conf > etc_telegraf/fixed.conf
+
+            cat etc_telegraf/fixed.conf
+      - run:
+          name: spin up Telegraf container (will succeed)
+          command: |
+            docker run -v $(pwd)/etc_telegraf/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
 
 workflows:
   main:

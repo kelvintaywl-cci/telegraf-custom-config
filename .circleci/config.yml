@@ -27,6 +27,7 @@ jobs:
           name: pull image
           command: |
             docker pull telegraf:1.17-alpine
+      - run: docker volume rm $(docker volume ls -q)
       - run:
           name: spin up Telegraf container (will fail)
           command: |
@@ -39,6 +40,7 @@ jobs:
 
             cat fixed.conf
           when: always
+      - run: docker volume rm $(docker volume ls -q)
       - run:
           name: spin up Telegraf container (will succeed)
           command: |

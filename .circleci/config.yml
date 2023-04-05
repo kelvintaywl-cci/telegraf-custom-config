@@ -38,10 +38,12 @@ jobs:
             sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' etc_telegraf/telegraf.conf > etc_telegraf/fixed.conf
 
             cat etc_telegraf/fixed.conf
+          when: always
       - run:
           name: spin up Telegraf container (will succeed)
           command: |
             docker run -v $(pwd)/etc_telegraf/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+          when: always
 
 workflows:
   main:

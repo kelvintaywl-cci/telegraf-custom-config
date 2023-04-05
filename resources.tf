@@ -1,7 +1,7 @@
 
 # pulls the image from the host machine's Docker
 resource "docker_image" "this" {
-  name = "var.telegraf_docker_image"
+  name = var.telegraf_docker_image
 }
 
 resource "docker_container" "this" {

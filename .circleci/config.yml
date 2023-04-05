@@ -27,11 +27,10 @@ jobs:
           name: pull image
           command: |
             docker pull telegraf:1.17-alpine
-      - run: docker volume rm $(docker volume ls -q)
       - run:
           name: spin up Telegraf container (will fail)
           command: |
-            docker run -v $(pwd)/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+            docker run -v $(pwd)/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine telegraf
       - run:
           name: fix Telegraf config
           command: |
@@ -40,11 +39,10 @@ jobs:
 
             cat fixed.conf
           when: always
-      - run: docker volume rm $(docker volume ls -q)
       - run:
           name: spin up Telegraf container (will succeed)
           command: |
-            docker run -v $(pwd)/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+            docker run -v $(pwd)/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine telegraf
           when: always
 
 workflows:

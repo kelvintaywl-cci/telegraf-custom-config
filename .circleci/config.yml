@@ -30,19 +30,19 @@ jobs:
       - run:
           name: spin up Telegraf container (will fail)
           command: |
-            docker run -v $(pwd)/etc_telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+            docker run -v $(pwd)/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
       - run:
           name: fix Telegraf config
           command: |
             # add quotes
-            sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' etc_telegraf/telegraf.conf > etc_telegraf/fixed.conf
+            sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' telegraf.conf > fixed.conf
 
-            cat etc_telegraf/fixed.conf
+            cat fixed.conf
           when: always
       - run:
           name: spin up Telegraf container (will succeed)
           command: |
-            docker run -v $(pwd)/etc_telegraf/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
+            docker run -v $(pwd)/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine
           when: always
 
 workflows:

@@ -9,8 +9,8 @@ resource "docker_container" "this" {
   image = docker_image.this.image_id
 
   volumes {
-    host_path      = abspath("${path.module}/telegraf.conf")
-    container_path = "/etc/telegraf/telegraf.conf"
+    host_path      = abspath("${path.module}/etc_telegraf")
+    container_path = "/etc/telegraf"
     read_only      = true
   }
 }

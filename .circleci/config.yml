@@ -17,11 +17,13 @@ executors:
   base:
     docker:
       - image: cimg/base:current
+  ubuntu2204:
+    machine:
+      image: ubuntu-2204:2023.02.1
 jobs:
   run:
-    executor: base
+    executor: ubuntu2204
     steps:
-      - setup_remote_docker
       - checkout
       - run:
           name: pull image

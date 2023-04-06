@@ -40,6 +40,11 @@ jobs:
           command: |
             # add quotes; better to use toml parsers (ideally)
             sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' telegraf.conf > fixed.conf
+
+            rm telegraf.conf
+            mv fixed.conf telegraf.conf
+
+            cat telegraf.conf
       - run:
           name: Restart Telegraf
           command: |

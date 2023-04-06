@@ -17,11 +17,14 @@ executors:
   base:
     docker:
       - image: cimg/base:current
+  machine:
+    machine:
+      image: ubuntu-2204:2023.02.1
+
 jobs:
   run:
-    executor: base
+    executor: machine
     steps:
-      - setup_remote_docker
       - checkout
       - run:
           name: spin up Telegraf container via Docker Compose

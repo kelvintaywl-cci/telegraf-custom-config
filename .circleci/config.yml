@@ -30,8 +30,25 @@ jobs:
           name: spin up Telegraf container via Docker Compose
           command: |
             docker-compose up -d
-      - run: sleep 30
-      - run: docker logs telegraf
+      - run: sleep 5
+      - run:
+          name: Inspect Telegraf (should show Invalid TOML error)
+          command: |
+            docker logs telegraf
+      - run:
+          name: Fix Telegraf config
+          command: |
+            # add quotes; better to use toml parsers (ideally)
+            sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' telegraf.conf > fixed.conf
+      - run:
+          name: Restart Telegraf
+          command: |
+            docker-compose restart telegraf
+      - run: sleep 5
+      - run:
+          name: Inspect Telegraf (should be fine now)
+          command: |
+            docker logs telegraf
 
 workflows:
   main:

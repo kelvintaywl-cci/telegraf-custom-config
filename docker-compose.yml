@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  telegraf:
+    image: telegraf:1.17-alpine
+    container_name: telegraf
+    volumes:
+    - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+    - '8125:8125'

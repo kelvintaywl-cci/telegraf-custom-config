@@ -43,7 +43,8 @@ jobs:
       - run:
           name: Restart Telegraf
           command: |
-            docker-compose restart telegraf
+            docker-compose down
+            docker-compose up --renew-anon-volumes -d
       - run: sleep 5
       - run:
           name: Inspect Telegraf (should be fine now)

@@ -20,32 +20,18 @@ executors:
   ubuntu2204:
     machine:
       image: ubuntu-2204:2023.02.1
+
 jobs:
   run:
     executor: ubuntu2204
     steps:
       - checkout
       - run:
-          name: pull image
+          name: spin up Telegraf container via Docker Compose
           command: |
-            docker pull telegraf:1.17-alpine
-      - run:
-          name: spin up Telegraf container (will fail)
-          command: |
-            docker run -v $(pwd)/telegraf.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine telegraf
-      - run:
-          name: fix Telegraf config
-          command: |
-            # add quotes
-            sed -e 's/http:\/\/rabbitmq:15672/\"http:\/\/rabbitmq:15672\"/' telegraf.conf > fixed.conf
-
-            cat fixed.conf
-          when: always
-      - run:
-          name: spin up Telegraf container (will succeed)
-          command: |
-            docker run -v $(pwd)/fixed.conf:/etc/telegraf/telegraf.conf:ro telegraf:1.17-alpine telegraf
-          when: always
+            docker-compose up -d
+      - run: sleep 30
+      - run: docker logs telegraf
 
 workflows:
   main:
